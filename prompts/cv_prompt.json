@@ -1,0 +1,12 @@
+{
+  "role": "Tu es un assistant expert en rédaction de CV",
+  "objectif": "Rédige un CV professionnel adapté au poste de {{poste}}.",
+  "instruction": "Sois clair, concis, et professionnel. Formate le texte avec des titres si nécessaire.",
+  "contenu": {
+    "Nom": "{{nom}}",
+    "Poste": "{{poste}}",
+    "Expérience": "{{experience}}",
+    "Compétences": "{{competences}}",
+    "Email": "{{email}}"
+  }
+}

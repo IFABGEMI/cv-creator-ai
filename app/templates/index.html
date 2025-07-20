@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>CV Creator AI</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 2rem; }
+    select, input, textarea, button { width: 100%; margin: 1rem 0; padding: 0.5rem; }
+    #output { white-space: pre-wrap; background: #f4f4f4; padding: 1rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Générateur de documents AI</h1>
+
+  <label for="type">Type de document</label>
+  <select id="type">
+    <option value="cv">CV</option>
+    <option value="motivation">Lettre de motivation</option>
+    <option value="linkedin">Résumé LinkedIn</option>
+    <option value="recommandation">Lettre de recommandation</option>
+    <option value="rephraser">Reformulation</option>
+  </select>
+
+  <div id="dynamicFields"></div>
+
+  <button onclick="sendRequest()">Générer</button>
+
+  <h3>Résultat</h3>
+  <div id="output"></div>
+
+  <script>
+    const fieldMap = {
+      cv: ["nom", "poste", "experience", "competences", "email"],
+      motivation: ["nom", "poste", "entreprise", "motivation"],
+      linkedin: ["nom", "domaine", "competences", "experience"],
+      recommandation: ["nom", "poste", "relation", "qualites"],
+      rephraser: ["texte_original", "langue", "style"]
+    };
+
+    const dynamicFields = document.getElementById("dynamicFields");
+    const output = document.getElementById("output");
+
+    document.getElementById("type").addEventListener("change", generateFields);
+    generateFields();
+
+    function generateFields() {
+      const type = document.getElementById("type").value;
+      dynamicFields.innerHTML = "";
+      fieldMap[type].forEach(field => {
+        dynamicFields.innerHTML += `
+          <label for="${field}">${field.replace("_", " ")}</label>
+          <textarea id="${field}"></textarea>
+        `;
+      });
+    }
+
+    async function sendRequest() {
+      const type = document.getElementById("type").value;
+      const variables = {};
+      fieldMap[type].forEach(field => {
+        variables[field] = document.getElementById(field).value;
+      });
+
+      const response = await fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, variables })
+      });
+
+      const data = await response.json();
+      output.textContent = data.result || data.error;
+    }
+  </script>
+</body>
+</html>
